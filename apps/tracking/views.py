@@ -30,8 +30,10 @@ class RelativeList(
 
 class MoodListView(generics.ListAPIView):
     serializer_class = MoodSerializer
-    queryset = Mood.objects.all()
     permission_class = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        return Mood.objects.all().order_by("?").first()
 
 
 class SuggestionByMoodView(views.APIView):

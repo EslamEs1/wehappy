@@ -6,11 +6,6 @@ from apps.users.models import Appointment, Feedback, Notification, Therapist, Us
 User = get_user_model()
 
 
-class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(write_only=True)
-
-
 class FeedbackSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     therapist = serializers.StringRelatedField(read_only=True)
@@ -51,8 +46,6 @@ class UserHistorySerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name="user-detail", lookup_field="id")
     create_feedback = serializers.HyperlinkedIdentityField(
         view_name="users:api-feedback", lookup_field="pk", read_only=True
     )
@@ -68,7 +61,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            "url",
             "name",
             "email",
             "profile_picture",

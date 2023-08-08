@@ -7,9 +7,10 @@ from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.mixins import DestroyModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import GenericViewSet
-from rest_framework import generics, status
-from django.contrib.auth import authenticate, login
+from rest_framework import status
+from django.contrib.auth import authenticate, login, logout
+from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
 
 from apps.users.models import Appointment, Notification, UserHistory
 from .serializers import (
@@ -19,7 +20,7 @@ from .serializers import (
     UserAppointmentSerializer,
     UserHistorySerializer,
     UserSerializer,
-    LoginSerializer
+    UserSignupSerializer,
 )
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -27,30 +28,46 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 User = get_user_model()
 
 
-class LoginAPIView(generics.GenericAPIView):
-    serializer_class = LoginSerializer
+class LoginView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        user = authenticate(request, email=email, password=password)
+        if user is not None:
+            login(request, user)
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key})
+        else:
+            return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
 
-        # Get the email and password from the serializer data
-        email = serializer.validated_data['email']
-        password = serializer.validated_data['password']
+class LogoutView(APIView):
+    def post(self, request):
+        logout(request)
+        return Response({'message': 'Logout successful.'})
 
-        # Authenticate the user using Django's built-in authenticate method
-        user = authenticate(request, username=email, password=password)
 
-        # If the user is not authenticated, return an error response
-        if user is None:
-            return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
+class SignupView(APIView):
+    def post(self, request):
+        serializer = UserSignupSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            username = serializer.validated_data['name']
+            password = serializer.validated_data['password']
+            phone_number = serializer.validated_data['phone_number']
+            is_therapist = serializer.validated_data['is_therapist']
+            if not User.objects.filter(name=username).exists():
+                user = User.objects.create_user(
+                    name=username, password=password, email=email, phone_number=phone_number, is_therapist=is_therapist)
+                return Response({'message': 'Signup successful.'})
+            else:
+                return Response({'error': 'Username already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Log the user in by creating a session
-        login(request, user)
 
-        # You can perform additional actions here if needed before returning the response.
-
-        return Response({'detail': 'Login successful.'})
+class UserViewSet(RetrieveModelMixin, ListModelMixin, DestroyModelMixin, UpdateModelMixin, viewsets.GenericViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class TherapistListViewSet(ListAPIView):
@@ -61,7 +78,7 @@ class TherapistListViewSet(ListAPIView):
         return User.objects.filter(is_therapist=True, is_active=True)
 
 
-class AppointmentViewSet(RetrieveModelMixin, ListModelMixin, DestroyModelMixin, UpdateModelMixin, GenericViewSet):
+class AppointmentViewSet(RetrieveModelMixin, ListModelMixin, DestroyModelMixin, UpdateModelMixin, viewsets.GenericViewSet):
     queryset = Appointment.objects.all()
     permission_classes = [IsAuthenticated]
 

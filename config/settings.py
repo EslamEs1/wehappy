@@ -29,9 +29,11 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     # TODO: set this to 60 seconds first and then to 518400 once you prove the former works
     SECURE_HSTS_SECONDS = 60
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool("DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True)
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
+        "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True)
     SECURE_HSTS_PRELOAD = env.bool("DJANGO_SECURE_HSTS_PRELOAD", default=True)
-    SECURE_CONTENT_TYPE_NOSNIFF = env.bool("DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True)
+    SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
+        "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True)
 
 # Application definition
 
@@ -52,7 +54,6 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
-    "djoser",
 ]
 
 LOCAL_APPS = [
@@ -128,16 +129,15 @@ if DEBUG:
     }
 else:
     DATABASES = {
-            "default": {
-                "ENGINE": "django.db.backends.postgresql",
-                "NAME": POSTGRES_DB,
-                "USER": POSTGRES_USER,
-                "PASSWORD": POSTGRES_PASSWORD,
-                "HOST": POSTGRES_HOST,
-                "PORT": POSTGRES_PORT,
-            }
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": POSTGRES_DB,
+            "USER": POSTGRES_USER,
+            "PASSWORD": POSTGRES_PASSWORD,
+            "HOST": POSTGRES_HOST,
+            "PORT": POSTGRES_PORT,
         }
-
+    }
 
 
 AUTH_USER_MODEL = "users.User"
@@ -197,7 +197,6 @@ MEDIA_URL = "/media/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-
 EMAIL_BACKEND = env(
     "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend",
 )
@@ -214,38 +213,18 @@ ADMINS = [("""admin""", "admin@gmail.com")]
 MANAGERS = ADMINS
 
 
-# LOGGING
-# ------------------------------------------------------------------------------
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s",
-        },
-    },
-    "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        }
-    },
-    "root": {"level": "INFO", "handlers": ["console"]},
-}
-
-
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+AUTHENTICATION_CLASSES = [
+    'rest_framework.authentication.TokenAuthentication',
+]
 
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
@@ -263,13 +242,3 @@ SPECTACULAR_SETTINGS = {
 STRIPE_PUBLIC_KEY = env("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY")
 STRIPE_WEBHOOK_SECRET = env("STRIPE_WEBHOOK_SECRET")
-
-
-
-
-DJOSER = {
-    'SERIALIZERS': {
-        'user_create': 'apps.users.serializers.UserSignupSerializer',
-        'user': 'apps.users.serializers.UserSerializer',
-    }
-}

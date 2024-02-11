@@ -5,7 +5,7 @@ from django.contrib.auth.models import UserManager as DjangoUserManager
 
 from typing import Optional
 
-class UserManager(BaseUserManager):
+class UserManager(DjangoUserManager):
     def _create_user(self, email: str, password: Optional[str] = None, **extra_fields):
         """
         Create and save a user with the given email and password.

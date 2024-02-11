@@ -1,3 +1,4 @@
+from typing import Union
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import UserManager as DjangoUserManager
 
@@ -5,7 +6,7 @@ from django.contrib.auth.models import UserManager as DjangoUserManager
 class UserManager(DjangoUserManager):
     """Custom manager for the User model."""
 
-    def _create_user(self, email: str, password: str | None, **extra_fields):
+    def _create_user(self, email: str, password: Union[str, None] = None, **extra_fields):
         """
         Create and save a user with the given email and password.
         """
@@ -13,7 +14,10 @@ class UserManager(DjangoUserManager):
             raise ValueError("The given email must be set")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.password = make_password(password)
+        
+        if password is not None:
+            user.password = make_password(password)
+
         user.save(using=self._db)
         return user
 

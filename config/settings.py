@@ -104,41 +104,20 @@ FIXTURE_DIRS = (str(APPS_DIR / "fixtures"),)
 
 
 # Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-POSTGRES_DB = env("POSTGRES_DB")
-POSTGRES_PASSWORD = env("POSTGRES_PASSWORD")
-POSTGRES_USER = env("POSTGRES_USER")
-POSTGRES_HOST = env("POSTGRES_HOST")
-POSTGRES_PORT = env("POSTGRES_PORT")
-
-POSTGRES_READY = (
-    POSTGRES_DB is not None
-    and POSTGRES_PASSWORD is not None
-    and POSTGRES_USER is not None
-    and POSTGRES_HOST is not None
-    and POSTGRES_PORT is not None
-)
-
-if DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "wehappy",
+        "USER": "root",
+        "PASSWORD": "",
+        "HOST": "localhost",  # Set to "localhost" if the database is on the same machine
+        "PORT": "3306",  # Default MySQL port is usually 3306
+        "OPTIONS": {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": POSTGRES_DB,
-            "USER": POSTGRES_USER,
-            "PASSWORD": POSTGRES_PASSWORD,
-            "HOST": POSTGRES_HOST,
-            "PORT": POSTGRES_PORT,
-        }
-    }
-
+}
 
 AUTH_USER_MODEL = "users.User"
 LOGIN_REDIRECT_URL = ""

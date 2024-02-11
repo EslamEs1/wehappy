@@ -18,7 +18,7 @@ class Relative(models.Model):
 
 class Mood(models.Model):
     name = models.CharField(max_length=100)
-    img_emoji = models.ImageField(upload_to="mood/emoji")
+    img_emoji = models.FileField(upload_to="mood/emoji")
     score = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 

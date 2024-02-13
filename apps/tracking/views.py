@@ -37,6 +37,7 @@ class MoodListView(generics.ListAPIView):
         latest_mood = Mood.objects.all()
 
         # Add a suggestion field to the Mood instance
+        latest_mood.suggestion = self.calculate_suggestion(latest_mood)
         
         return [latest_mood]  # Return a list containing the latest Mood instance
 

@@ -30,11 +30,21 @@ class RelativeList(
 
 class MoodListView(generics.ListAPIView):
     serializer_class = MoodSerializer
-    permission_class = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
-        return Mood.objects.all().order_by("?").first()
+        # Get the latest Mood based on created_at
+        latest_mood = Mood.objects.latest('created_at')
 
+        # Add a suggestion field to the Mood instance
+        latest_mood.suggestion = self.calculate_suggestion(latest_mood)
+        
+        return [latest_mood]  # Return a list containing the latest Mood instance
+
+    def calculate_suggestion(self, mood):
+        # Your suggestion calculation logic here
+        # For demonstration, a dummy suggestion is provided
+        return f"A suggestion for {mood.name} based on your logic"
 
 class SuggestionByMoodView(views.APIView):
     serializer_class = SuggestionSerializer

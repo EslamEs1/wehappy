@@ -34,7 +34,7 @@ class MoodListView(generics.ListAPIView):
     
     def get_queryset(self):
         # Get the latest Mood based on created_at
-        latest_mood = Mood.objects.latest('created_at')
+        latest_mood = Mood.objects.all('created_at')
 
         # Add a suggestion field to the Mood instance
         

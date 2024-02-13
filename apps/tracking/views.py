@@ -33,19 +33,14 @@ class MoodListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
-        # Get the latest Mood based on created_at
-        latest_mood = Mood.objects.all()
+        # Retrieve all moods
+        return Mood.objects.all()
+    
 
-        # Add a suggestion field to the Mood instance
-        latest_mood.suggestion = self.calculate_suggestion(latest_mood)
-        
-        return [latest_mood]  # Return a list containing the latest Mood instance
 
-    def calculate_suggestion(self, mood):
-        # Your suggestion calculation logic here
-        # For demonstration, a dummy suggestion is provided
-        return f"A suggestion for Mood based on your logic"
 
+
+    
 class SuggestionByMoodView(views.APIView):
     serializer_class = SuggestionSerializer
     permission_classes = (permissions.IsAuthenticated,)

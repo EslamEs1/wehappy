@@ -13,17 +13,11 @@ class RelativeSerializer(serializers.ModelSerializer):
 
 
 class MoodSerializer(serializers.ModelSerializer):
-    suggestion = serializers.SerializerMethodField()
-
     class Meta:
         model = Mood
         fields = "__all__"
 
-    def get_suggestion(self, obj):
-        suggestions = obj.suggestion.all().values_list("suggestion_text", flat=True)
-        return suggestions
-
-
+        
 class SuggestionSerializer(serializers.ModelSerializer):
     mood_name = serializers.ReadOnlyField(source="mood.name")
 

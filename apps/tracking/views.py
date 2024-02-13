@@ -41,7 +41,10 @@ class MoodListView(generics.ListAPIView):
         
         return [latest_mood]  # Return a list containing the latest Mood instance
 
-   
+    def calculate_suggestion(self, mood):
+        # Your suggestion calculation logic here
+        # For demonstration, a dummy suggestion is provided
+        return f"A suggestion for Mood based on your logic"
 
 class SuggestionByMoodView(views.APIView):
     serializer_class = SuggestionSerializer

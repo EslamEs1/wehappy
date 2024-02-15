@@ -3,9 +3,13 @@ from rest_framework import generics, mixins, permissions, status, views, viewset
 from rest_framework.response import Response
 
 from apps.tracking.models import Message, Mood, Relative, Suggestion
-from apps.users.models import Brain_Health_Score, Send_To_Relative, Suggestion_Therapist, Therapist
+from apps.users.models import Brain_Health_Score, Send_To_Relative, Suggestion_Therapist, Therapist, User
+from apps.users.serializers import UserSerializer
 
 from .serializers import MoodSerializer, RelativeSerializer, SuggestionSerializer
+from rest_framework.decorators import action
+from rest_framework.request import Request
+
 
 
 class RelativeList(
@@ -26,6 +30,16 @@ class RelativeList(
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    @action(detail=False, methods=['post'])
+    def check_user(self, request):
+        email = request.data.get('email')
+        try:
+            user = User.objects.get(email=email)
+            serializer = UserSerializer(user, context={'request': request})
+            return Response(serializer.data, status=200)
+        except User.DoesNotExist:
+            return Response({'error': 'User does not exist.'}, status=404)
 
 
 class MoodListView(generics.ListAPIView):

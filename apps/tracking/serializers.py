@@ -11,6 +11,7 @@ class RelativeSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ["id", "url"]
 
+    
 
 class MoodSerializer(serializers.ModelSerializer):
     class Meta:

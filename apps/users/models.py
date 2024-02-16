@@ -151,9 +151,10 @@ class UserHistory(models.Model):
 class Brain_Health_Score(models.Model):
     user = models.ForeignKey(User, related_name="brain_score", on_delete=models.CASCADE)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
 
     def __str__(self):
-        return f"{self.user.name} - {self.rating}"
+        return f"{self.user.name} - {self.rating} - {self.created_at}"
 
 
 class Send_To_Relative(models.Model):

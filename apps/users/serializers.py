@@ -93,9 +93,9 @@ class UserSerializer(serializers.ModelSerializer):
         else:
             fields_to_exclude = ["user_history", "feedbacks"]
 
-        data = {key: value for key,
-                value in data.items() if key not in fields_to_exclude}
-        return data
+        # Create a new dictionary to store filtered data
+        filtered_data = {key: value for key, value in data.items() if key not in fields_to_exclude}
+        return filtered_data
 
     def update(self, instance, validated_data):
         therapist_profile_data = validated_data.pop("therapist_profile", None)

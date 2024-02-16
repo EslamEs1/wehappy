@@ -11,8 +11,9 @@ from rest_framework import status
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
+from django.db.models import Avg
 
-from apps.users.models import Appointment, Notification, UserHistory
+from apps.users.models import Appointment, Brain_Health_Score, Notification, UserHistory
 from .serializers import (
     FeedbackSerializer,
     NotificationSerializer,
@@ -36,11 +37,25 @@ class LoginView(APIView):
         if user is not None:
             login(request, user)
             token, _ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key})
+            
+            # Fetch the average brain health score
+            average_brain_health_score = Brain_Health_Score.objects.aggregate(avg_score=Avg('rating'))['avg_score']
+            
+            # Set average brain health score to 100 if it's null
+            if average_brain_health_score is None:
+                average_brain_health_score = 100
+
+            # Create the response data
+            user_data = {
+                'token': token.key,
+                'user_id': user.id,
+                'user_name': user.name,
+                'average_brain_health_score': average_brain_health_score
+            }
+            return Response(user_data)
         else:
             return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
-
-
+        
 class LogoutView(APIView):
     def post(self, request):
         logout(request)

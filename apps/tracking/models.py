@@ -11,7 +11,7 @@ class Relative(models.Model):
     phone_number = models.CharField(max_length=20)
     is_app_user = models.BooleanField(default=False)
     relation = models.CharField(max_length=100, default='Friend')  # New field for relation
-    image = models.ImageField(upload_to='relative_images/', null=True, blank=True, default='default_image.jpg')  # New field for image
+    image = models.FileField(upload_to='relative_images/', null=True, blank=True, default='default_image.jpg')  # New field for image
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

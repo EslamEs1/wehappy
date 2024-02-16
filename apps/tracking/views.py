@@ -34,13 +34,18 @@ class RelativeList(
     @action(detail=False, methods=['post'])
     def check_user(self, request):
         email = request.data.get('email')
-        try:
-            user = User.objects.get(email=email)
-            serializer = UserSerializer(user, context={'request': request})
-            return Response(serializer.data, status=200)
-        except User.DoesNotExist:
-            return Response({'error': 'User does not exist.'}, status=404)
+        user_id = request.data.get('user_id')
 
+        try:
+            user = User.objects.get(email=email, id=user_id)
+            # Check if the user exists in the Relative model
+            if Relative.objects.filter(user=user).exists():
+                return Response({'error': 'User is already added as a relative.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            serializer = UserSerializer(user, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'error': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
 
 class MoodListView(generics.ListAPIView):
     serializer_class = MoodSerializer

@@ -5,17 +5,18 @@ User = settings.AUTH_USER_MODEL
 
 
 class Relative(models.Model):
-    user = models.ForeignKey(User, related_name="relative", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="relatives", on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     email = models.EmailField()
     phone_number = models.CharField(max_length=20)
     is_app_user = models.BooleanField(default=False)
-    relation = models.CharField(max_length=100, default='Friend')  # New field for relation
-    image = models.FileField(upload_to='relative_images/', null=True, blank=True, default='default_image.jpg')  # New field for image
+    relation = models.CharField(max_length=100, default='Friend')
+    image = models.FileField(upload_to='relative_images/', null=True, blank=True, default='default_image.jpg')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
+
 
 class Mood(models.Model):
     name = models.CharField(max_length=100)

@@ -4,7 +4,7 @@ from apps.tracking.models import Mood, Relative, Suggestion
 
 
 class RelativeSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name="truck:relative-detail", lookup_field="pk")
+    url = serializers.HyperlinkedIdentityField(view_name="relative-detail", lookup_field="pk")
 
     class Meta:
         model = Relative

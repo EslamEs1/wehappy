@@ -13,16 +13,15 @@ from rest_framework.request import Request
 
 
 class RelativeList(
-    mixins.RetrieveModelMixin,
-    mixins.CreateModelMixin,
     mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     serializer_class = RelativeSerializer
-    queryset = Relative.objects.all()
-    permission_class = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     lookup_field = "pk"
 
     def get_queryset(self):
@@ -40,7 +39,6 @@ class RelativeList(
             return Response(serializer.data, status=200)
         except User.DoesNotExist:
             return Response({'error': 'User does not exist.'}, status=404)
-
 
 class MoodListView(generics.ListAPIView):
     serializer_class = MoodSerializer

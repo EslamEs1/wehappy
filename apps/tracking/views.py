@@ -50,7 +50,17 @@ class MoodListView(generics.ListAPIView):
     
 
 
+class RelativeViewSet(viewsets.ModelViewSet):
+    queryset = Relative.objects.all()
+    serializer_class = RelativeSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        return Relative.objects.filter(user=user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user) 
 
     
 class SuggestionByMoodView(views.APIView):

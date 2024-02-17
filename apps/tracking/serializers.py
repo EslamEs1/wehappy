@@ -1,15 +1,14 @@
 from rest_framework import serializers
+from rest_framework.serializers import SerializerMethodField
+from django.urls import reverse
 
 from apps.tracking.models import Mood, Relative, Suggestion
 
 
 class RelativeSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name="relative-detail", lookup_field="pk")
-
     class Meta:
         model = Relative
         fields = "__all__"
-        read_only_fields = ["id", "url"]
 
     
 

@@ -3,6 +3,7 @@ from apps.users.views import (
     CreateAppointmentViewSet,
     FeedbackCreateView,
     TherapistListViewSet,
+    TherapistProfileViewSet,
     UserHistoryListAPIView,
     AppointmentViewSet,
     NotificationViewSet,
@@ -21,6 +22,8 @@ urlpatterns = [
         {'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='users-detail'),
 
     path("therapists/", TherapistListViewSet.as_view(), name="api-therapist"),
+        path("therapists/<int:pk>/", TherapistProfileViewSet.as_view(), name="api-therapist-profile"),
+
     path("feedback/<int:pk>/", FeedbackCreateView.as_view(), name="api-feedback"),
     path("create-appointment/<int:pk>/",
          CreateAppointmentViewSet.as_view(), name="api-create-appointment"),

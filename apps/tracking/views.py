@@ -53,7 +53,7 @@ class MoodListView(generics.ListAPIView):
 class RelativeViewSet(viewsets.ModelViewSet):
     queryset = Relative.objects.all()
     serializer_class = RelativeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated,]
 
     def get_queryset(self):
         user = self.request.user

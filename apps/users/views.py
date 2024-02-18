@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.mixins import DestroyModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
@@ -12,6 +12,7 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from django.db.models import Avg
+
 
 from apps.users.models import Appointment, Brain_Health_Score, Notification, UserHistory
 from .serializers import (
@@ -91,6 +92,20 @@ class TherapistListViewSet(ListAPIView):
 
     def get_queryset(self):
         return User.objects.filter(is_therapist=True, is_active=True)
+    
+class TherapistProfileViewSet(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            therapist_id = self.kwargs['pk']
+            therapist = self.queryset.get(id=therapist_id, is_therapist=True, is_active=True)
+            serializer = self.get_serializer(therapist)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            return Response({'error': 'Therapist not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class AppointmentViewSet(RetrieveModelMixin, ListModelMixin, DestroyModelMixin, UpdateModelMixin, viewsets.GenericViewSet):

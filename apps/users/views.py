@@ -12,6 +12,8 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from django.db.models import Avg
+from django.shortcuts import render
+
 
 
 from apps.users.models import Appointment, Brain_Health_Score, Notification, UserHistory
@@ -199,3 +201,7 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
 class UserHistoryListAPIView(ListAPIView):
     queryset = UserHistory.objects.all()
     serializer_class = UserHistorySerializer
+
+
+def landing_page(request):
+    return render(request, 'home.html')

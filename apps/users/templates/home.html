@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happyzenful App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f6efff; /* light purple shade */
+            background-image: url('background.jpg'); /* Background image */
+            background-size: cover;
+            background-position: center;
+            color: #554466; /* dark purple shade */
+            text-align: center;
+        }
+        .container {
+            padding: 50px;
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 30px;
+            color: #f28482; /* light peach shade */
+            animation: pulse 2s infinite alternate; /* Animation effect */
+        }
+        p {
+            font-size: 24px;
+            margin-bottom: 40px;
+        }
+        #countdown {
+            font-size: 20px;
+            margin-bottom: 40px;
+        }
+        .progress-bar {
+            width: 80%;
+            background-color: #ffffff; /* White color for progress bar background */
+            border-radius: 10px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        .progress-bar-inner {
+            height: 20px;
+            background-color: #f28482; /* light peach shade */
+            width: 0%;
+            text-align: center;
+            line-height: 20px;
+            color: #ffffff; /* White color for text */
+            transition: width 0.5s ease-in-out; /* Smooth transition */
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Happyzenful App</h1>
+        <p>Brain Health Tracking and Mood Tracking App</p>
+        <div id="countdown">Countdown: 35 days</div>
+        <div class="progress-bar">
+            <div class="progress-bar-inner" id="progress-bar-inner">0%</div>
+        </div>
+    </div>
+
+    <script>
+        // Set the countdown date to February 19th
+        var countDownDate = new Date('February 19, 2024 00:00:00').getTime();
+
+        // Set the launch date to March 25th
+        var launchDate = new Date('March 25, 2024 00:00:00').getTime();
+
+        // Update the countdown every 1 second
+        var x = setInterval(function() {
+            // Get the current date and time
+            var now = new Date().getTime();
+
+            // Calculate the remaining time
+            var distance = launchDate - now;
+
+            // Calculate days, hours, minutes, and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Update the countdown display
+            document.getElementById("countdown").innerHTML = "Countdown: " + days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+
+            // Calculate the progress bar width
+            var totalMilliseconds = launchDate - countDownDate;
+            var elapsedTime = now - countDownDate;
+            var remainingPercentage = (elapsedTime / totalMilliseconds) * 100;
+            var progressBarWidth = 100 - remainingPercentage;
+            document.getElementById("progress-bar-inner").style.width = progressBarWidth + "%";
+
+            // If the countdown is over, display a message
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("countdown").innerHTML = "EXPIRED";
+                document.getElementById("progress-bar-inner").style.width = "100%";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

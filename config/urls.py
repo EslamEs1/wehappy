@@ -7,10 +7,13 @@ from django.conf import settings
 from apps.users.views import (
     LoginView,
     LogoutView,
-    SignupView
+    SignupView,
+    landing_page
 )
 
 urlpatterns = [
+    path('', landing_page, name='landing_page'),
+
     path(settings.ADMIN_URL, admin.site.urls),
 
 
